@@ -1,7 +1,7 @@
 pandas
 folium
 json
-streamlit as st
+streamlit
 streamlit_folium
 sqlalchemy
 psycopg2 

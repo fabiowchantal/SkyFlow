@@ -12,35 +12,13 @@ import psycopg2  # precisa estar instalado: pip install psycopg2-binary
 # CONFIGURAÇÃO DE CONEXÃO – SUPABASE (POSTGRES)
 # ==============================
 
-# Exemplo antigo (NÃO deixar usuário/senha fixos no código, só em secrets):
-# DB_URL = "postgresql+psycopg2://postgres:SENHA@HOST:5432/postgres?sslmode=require"
-# engine = create_engine(DB_URL)
+# Pegue esses dados em:
+# Supabase -> Project -> Settings -> Database -> Connection string
 
-@st.cache_resource
-def get_engine():
-    """
-    Cria e reutiliza o engine SQLAlchemy usando as credenciais
-    definidas em st.secrets['supabase'].
+DB_URL = "postgresql+psycopg2://postgres:Fwc2025Fiap@db.yxeweiwnctswkvjokkqh.supabase.co:5432/postgres?sslmode=require"
 
-    Em .streamlit/secrets.toml (local) OU no painel do Streamlit Cloud,
-    você deve ter algo assim:
-
-    [supabase]
-    host = "db.yxeweiwnctswkvjokkqh.supabase.co"
-    port = "5432"
-    database = "postgres"
-    user = "postgres"
-    password = "SUA_SENHA_AQUI"
-    """
-    cfg = st.secrets["supabase"]
-
-    url = (
-        f"postgresql+psycopg2://{cfg['user']}:{cfg['password']}"
-        f"@{cfg['host']}:{cfg['port']}/{cfg['database']}?sslmode=require"
-    )
-
-    engine = create_engine(url)
-    return engine
+# Cria engine global para reuso
+engine = create_engine(DB_URL)
 
 
 # ==============================
@@ -64,23 +42,17 @@ TABLES = [
 
 def get_connection():
     """
-    Cria e retorna uma conexão com o banco Supabase (PostgreSQL),
-    usando o engine criado em get_engine().
+    Cria e retorna uma conexão com o banco Supabase (PostgreSQL).
     """
-    engine = get_engine()
-    try:
-        conn = engine.connect()
-        return conn
-    except Exception as e:
-        st.error(f"Erro ao conectar ao banco de dados: {e}")
-        st.stop()
+    # engine.connect() retorna uma Connection do SQLAlchemy
+    return engine.connect()
 
 
 def read_table_to_dataframe(conn, table_name: str) -> pd.DataFrame:
     """
     Lê TODOS os registros de uma tabela e retorna como DataFrame do pandas.
     """
-    query = f"SELECT * FROM {table_name}"
+    query = f'SELECT * FROM {table_name}'
     df = pd.read_sql(query, con=conn)
     return df
 

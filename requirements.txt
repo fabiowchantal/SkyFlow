@@ -1,9 +1,7 @@
-streamlit
 pandas
-numpy
+folium
+json
+streamlit as st
+streamlit_folium
 sqlalchemy
-psycopg2-binary
-matplotlib
-seaborn
-wordcloud
-scipy
+psycopg2 

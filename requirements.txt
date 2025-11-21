@@ -1,0 +1,9 @@
+streamlit
+pandas
+numpy
+sqlalchemy
+psycopg2-binary
+matplotlib
+seaborn
+wordcloud
+scipy
